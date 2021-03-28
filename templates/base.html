@@ -5,14 +5,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/normalize.css" />
-    <link rel="stylesheet" href="/static/css/styles.css" />
-    <title>User Login System</title>
+    <link rel="stylesheet" href="/static/css/styles.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <title>IndiClassroom</title>
 </head>
-<body>
+<body style="background-image: url('static/assets/bg.jpg');background-size: cover;height: 1000px;width: 100%;background-position: center;background-repeat: no-repeat;">
+    <nav class="navbar navbar-dark bg-dark d-flex">       
+        <div class="container align-items-center">
+            <div class="navbar-brand">
+                <h3><a href="/" class="text-decoration-none text-white">IndiClassroom</a></h3>
+            </div>
+          <a class="btn-outline-secondary btn navbar-brand" href="/loginform">Login</a>
+        </div>
+    </nav>
     {% block content %}
 
     {% endblock %}
     <script src="/static/js/jquery.js"></script>
     <script src="/static/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 </body>
 </html>

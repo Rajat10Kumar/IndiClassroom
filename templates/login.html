@@ -8,23 +8,21 @@
 
         <form name="login_form">
 
-            <label for="email">Email</label>
+            <label for="email">Email</label><i class="fa fa-envelope mx-2" style="font-size:large"></i>
             <input type="email" name="email" class="field" required>
 
-            <label for="password">Password</label>
+            <label for="password">Password</label><i class="fa fa-lock mx-2" style="font-size:x-large"></i>
             <input type="password" name="password" class="field" required>
-            <div class="center">
+            <!-- <div class="center">
                 <label for="teacher">Teacher</label>
-                <input type="radio" name="user_type" value="teacher" id="teacher">
-                <!-- <label for="student">Student</label>
-                <input type="radio" name="user_type" value="student" id="student"> -->
-              </div>
+                <input type="radio" name="isTeacher" value="teacher" id="teacher">
+            </div> -->
             <p class="error error--hidden"></p>
 
-            <input type="submit" value="Log In" class="btn">
+            <input type="submit" value="Log In" class="btn btn-primary">
 
             <div class="center">
-                <a href="/" class="btn btn--secondary">Sign Up</a>
+                <a href="/signupform" class="btn btn-secondary">Sign Up</a>
             </div>
 
         </form>

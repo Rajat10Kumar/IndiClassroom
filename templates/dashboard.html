@@ -8,7 +8,7 @@
       <p class="center">You are currently logged in.</p>
 
       <div class="center">
-        <a href="/user/logout" class="btn btn--secondary">Log Out</a>
+        <a href="/user/logout" class="btn btn-primary">Log Out</a>
       </div>
     
     </div>
@@ -18,12 +18,35 @@
       <h2 class="center">Your Info</h2>
 
       <p>
-        <strong>ID:</strong> {{ session['user']['_id'] }}<br>
+        <strong>ID:</strong> {{ session['user']['_id']['$oid'] }}<br>
         <strong>Name:</strong> {{ session['user']['name'] }}<br>
         <strong>Email:</strong> {{ session['user']['email'] }}
       </p>
-    
+      <button id="myDIV" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Join Classroom
+      </button>
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Join Classroom</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> 
+              <div class="modal-body">
+                <form class="row needs-validation" novalidate name="join_class">
+                  <div class="col-lg">
+                    <label for="validationCustom01" class="form-label">Enter Classroom Code</label>
+                    <input type="text" class="form-control" id="validationCustom01" placeholder="eg. XYZ-ABC" required>
+                  </div>
+                </form>
+              </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+              <button class="btn btn-primary" type="submit" data-bs-dismiss="modal">Join Classroom</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  
   </div>
 {% endblock %}

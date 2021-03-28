@@ -9,28 +9,28 @@
 
     <form name="signup_form">
 
-      <label for="name">Name</label>
+      <label for="name">Name</label><i class="fa fa-user mx-2" style="font-size:x-large"></i>
       <input type="text" name="name" class="field" required>
 
-      <label for="email">Email</label>
+      <label for="email">Email</label><i class="fa fa-envelope mx-2" style="font-size:large"></i>
       <input type="email" name="email" class="field" required>
 
-      <label for="password">Password</label>
+      <label for="password">Password</label><i class="fa fa-lock mx-2" style="font-size:x-large"></i>
       <input type="password" name="password" class="field" required>
 
-      <label for="confirm_password">Confirm Password</label>
+      <label for="confirm_password">Confirm Password</label><i class="fa fa-lock mx-2" style="font-size:x-large"></i>
       <input type="password" name="confirm_password" class="field" required>
 
       <p class="error error--hidden"></p>
       <div class="center">
         <label for="teacher">Teacher</label>
-        <input type="radio" name="user_type" value="teacher" id="teacher">
+        <input type="radio" name="isTeacher" value="teacher" id="teacher">
         <!-- <label for="student">Student</label>
         <input type="radio" name="user_type" value="student" id="student"> -->
       </div>
-      <input type="submit" value="Sign Up" class="btn">
+      <input type="submit" value="Sign Up" class="btn btn-primary">
       <div class="center">
-        <a href="/loginform" class="btn btn--secondary">Log in Here</a>
+        <a href="/loginform" class="btn btn-secondary">Log in Here</a>
       </div>
 
     </form>
