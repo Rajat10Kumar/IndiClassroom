@@ -17,7 +17,7 @@ $("form[name=signup_form").submit(function (e) {
         myFunction(resp["isTeacher"]);
       } else {
         window.location.href = "/classroom/";
-        myFunction(resp['isTeacher'])
+        myFunction(resp["isTeacher"]);
       }
 
       console.log(radioValue + "Hello");
@@ -48,10 +48,10 @@ $("form[name=login_form").submit(function (e) {
       // console.log(resp['isTeacher']);
       if (resp["isTeacher"]) {
         window.location.href = "/classroom/";
-        myFunction(resp['isTeacher'])
+        myFunction(resp["isTeacher"]);
       } else {
         window.location.href = "/dashboard/";
-        myFunction(resp['isTeacher'])
+        myFunction(resp["isTeacher"]);
       }
     },
     error: function (resp) {
@@ -69,3 +69,76 @@ function myFunction(isTeacher) {
     x.style.display = "none";
   }
 }
+
+$("form[name=make_class").submit(function (e) {
+  // console.log("ddgd");
+  var $form = $(this);
+  var $error = $form.find(".error");
+  var data = $form.serialize();
+  console.log(data);
+  // var radioValue = $("input[name='isTeacher']:checked").val();
+  $.ajax({
+    url: "/classroom/create",
+    type: "POST",
+    data: data,
+    dataType: "json",
+    success: function (resp) {
+      // e.preventDefault();
+      console.log("a");
+      console.log(resp);
+      // window.location.reload();
+    },
+    error: function (resp) {
+      console.log("b");
+      $error.text(resp.responseJSON.error).removeClass("error--hidden");
+    },
+  });
+  e.preventDefault();
+  return false;
+});
+$("form[name=join_class").submit(function (e) {
+  // console.log("ddgd");
+  var $form = $(this);
+  var $error = $form.find(".error");
+  var data = $form.serialize();
+  console.log(data);
+  // var radioValue = $("input[name='isTeacher']:checked").val();
+  $.ajax({
+    url: "/dashboard/join",
+    type: "POST",
+    data: data,
+    dataType: "json",
+    success: function (resp) {
+      e.preventDefault();
+      console.log("a");
+      console.log(resp);
+    },
+    error: function (resp) {
+      console.log("b");
+      $error.text(resp.responseJSON.error).removeClass("error--hidden");
+    },
+  });
+});
+// $("form[name=assignment").submit(function (e) {
+//   // console.log("ddgd");
+//   var $form = $(this);
+//   var $error = $form.find(".error");
+//   var data = $form.serialize();
+//   // console.log(data);
+//   // var radioValue = $("input[name='isTeacher']:checked").val();
+//   $.ajax({
+//     url: "/assignment",
+//     type: "POST",
+//     data: data,
+//     dataType: "json",
+//     success: function (resp) {
+//       e.preventDefault();
+//       console.log("a");
+//       console.log(resp);
+//     },
+//     error: function (resp) {
+//       // console.log("b");
+//       $error.text(resp.responseJSON.error).removeClass("error--hidden");
+//     },
+//   });
+// });

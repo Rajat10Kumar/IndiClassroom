@@ -2,51 +2,68 @@
 {% block content %}
 <div class="card-wrapper">
 
-    <div class="card">
+  <div class="card">
 
-      <h1 class="center">Classroom</h1>
-      <p class="center">You are currently logged in.</p>
+    <h1 class="center">Classroom</h1>
+    <p class="center">You are currently logged in.</p>
 
-      <div class="center">
-        <a href="/user/logout" class="btn btn-primary">Log Out</a>
-      </div>
-    
+    <div class="center">
+      <a href="/user/logout" class="btn btn-primary">Log Out</a>
     </div>
 
-    <div class="card">
+  </div>
 
-      <h2 class="center">Your Info</h2>
+  <div class="card">
 
-      <p>
-        <strong>ID:</strong> {{ session['user']['_id']['$oid']}}<br>
-        <strong>Name:</strong> {{ session['user']['name'] }}<br>
-        <strong>Email:</strong> {{ session['user']['email'] }}<br>
-      </p>
-        <button id="myDIV" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-          Create Classroom
-        </button>
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Create Classroom</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <h2 class="center">Your Info</h2>
+
+    <p>
+      <strong>ID:</strong> {{ session['user']['_id']}}<br>
+      <strong>Name:</strong> {{ session['user']['name'] }}<br>
+      <strong>Email:</strong> {{ session['user']['email'] }}<br>
+    </p>
+    <button id="myDIV" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      Create Classroom
+    </button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Create Classroom</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form class="row needs-validation" name="make_class">
+              <div class="col-lg">
+                <label for="validationCustom01" class="form-label">Enter Classroom Name</label>
+                <input type="text" class="form-control" id="validationCustom01" placeholder="eg. IT-2B" required
+                  name="name">
               </div>
-                <div class="modal-body">
-                  <form class="row needs-validation" novalidate name="create_class">
-                    <div class="col-lg">
-                      <label for="validationCustom01" class="form-label">Enter Classroom Name</label>
-                      <input type="text" class="form-control" id="validationCustom01" placeholder="eg. IT-2B" required name="name">
-                    </div>
-                  </form>
-                </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                <button class="btn btn-primary" type="submit" data-bs-dismiss="modal">Create Classroom</button>
-              </div>
-            </div>
+              <input type="submit" value="Create Classroom" class="btn btn-primary">
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
+      </div>
     </div>
   </div>
+    {% if not classroom  %}
+    <div class="card">
+      <h6 class="center">No Classroom has been Created</h6>
+    </div>
+    {% endif %}
+  {%for i in range(0,Length)%}
+  <div class="card">
+    <div class="d-flex justify-content-evenly align-items-center">
+      <h4>{{classroom[i]["cname"]}}</h4>
+      <h5>Students : {{classroom[i]["student"]|length}}</h5>
+    </div>
+    <div class="center mt-2">
+      <a href="{{url_for('view_class',id = classroom[i]['cid'])}}" class="btn btn-outline-success">View Class</a>
+    </div>
+  </div>
+  {%endfor%}
+</div>
 {% endblock %}
