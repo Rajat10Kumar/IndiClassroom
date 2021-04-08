@@ -225,33 +225,42 @@ def enter_class(id):
         img.append(photo.decode('utf-8'))
     # print(type(asst[0].id))
     return render_template('enterclass.html', data=view_class, assign=asst, image=img), 200
+    # return render_template('tabs.html'), 200
     # return jsonify(obj), 200
 
 
-@app.route('/submit/<id>', methods=['POST'])
-def submit_assignment(id):
+@app.route('/submit/<id>/<cid>', methods=['POST'])
+def submit_assignment(id, cid):
     file = request.files['file']
     filename = secure_filename(file.filename)
     # print(request.form['aid'])
     asst = Assignment.objects(cid=id).first()
-    print(id)
+    # print(id, cid)
+
     subasst = Submission()
-    # dueDate = asst['dueDate']
-    # currDate = datetime.datetime.now()
+    dueDate = asst['dueDate']
+    currDate = datetime.datetime.now()
     # # print(dueDate.date(), dueDate.time())
     # print(dueDate, currDate)
     # print(dueDate < currDate)
-    # if currDate > dueDate:
-    #     # subasst.isLate = True
-    #     print("Late")
-    # else:
-    #     # subasst.isLate = False
-    #     print("Not Late")
-    # subasst.file.put(file, content_type='image/jpeg')
-    # subasst.onAssign = asst
-    # subasst.save()
+    if currDate > dueDate:
+        subasst.isLate = True
+        print("Late")
+    else:
+        subasst.isLate = False
+        print("Not Late")
+    subasst.file.put(file, content_type='image/jpeg')
+    subasst.onAssign = asst
+    subasst.save()
+    view_class = Classroom.objects(cid=cid).first()
+    asst = Assignment.objects(onClass=cid)
+    img = []
+    for i in asst:
+        photo = codecs.encode(i.file.read(), 'base64')
+        img.append(photo.decode('utf-8'))
+    return render_template('enterclass.html', data=view_class, assign=asst, image=img, subasst=subasst), 200
     # return jsonify(subasst), 200
-    return 'hello'
+    # return redirect('/enter/'+cid)
 
 
 @app.route('/assignment/<string:id>', methods=['POST'])

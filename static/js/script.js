@@ -119,26 +119,7 @@ $("form[name=join_class").submit(function (e) {
     },
   });
 });
-// $("form[name=assignment").submit(function (e) {
-//   // console.log("ddgd");
-//   var $form = $(this);
-//   var $error = $form.find(".error");
-//   var data = $form.serialize();
-//   // console.log(data);
-//   // var radioValue = $("input[name='isTeacher']:checked").val();
-//   $.ajax({
-//     url: "/assignment",
-//     type: "POST",
-//     data: data,
-//     dataType: "json",
-//     success: function (resp) {
-//       e.preventDefault();
-//       console.log("a");
-//       console.log(resp);
-//     },
-//     error: function (resp) {
-//       // console.log("b");
-//       $error.text(resp.responseJSON.error).removeClass("error--hidden");
-//     },
-//   });
-// });
+$("form[name=assignment").submit(function (e) {
+  var cid = document.getElementsByName("cid");
+  window.location("/enter/" + cid);
+});
