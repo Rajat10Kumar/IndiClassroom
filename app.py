@@ -219,12 +219,31 @@ def view_class(id):
 def enter_class(id):
     view_class = Classroom.objects(cid=id).first()
     asst = Assignment.objects(onClass=id)
-    img = []
+    done = []
+    unDone = []
+    missing = []
+    submission = []
+    done_img = []
+    unDone_img = []
+    missing_img = []
     for i in asst:
+        subm = Submission.objects(onAssign=i.cid)
         photo = codecs.encode(i.file.read(), 'base64')
-        img.append(photo.decode('utf-8'))
+        junk = (photo.decode('utf-8'))
+        if subm:
+            done.append(i)
+            done_img.append(junk)
+            for j in subm:
+                photo = codecs.encode(j.file.read(), 'base64')
+                submission.append(photo.decode('utf-8'))
+        elif i.dueDate < datetime.datetime.now():
+            missing_img.append(junk)
+            missing.append(i)
+        else:
+            unDone_img.append(junk)
+            unDone.append(i)
     # print(type(asst[0].id))
-    return render_template('enterclass.html', data=view_class, assign=asst, image=img), 200
+    return render_template('enterclass.html', data=view_class, done=done, unDone=unDone, missing=missing, submission=submission, done_img=done_img, unDone_img=unDone_img, missing_img=missing_img), 200
     # return render_template('tabs.html'), 200
     # return jsonify(obj), 200
 
@@ -258,9 +277,9 @@ def submit_assignment(id, cid):
     for i in asst:
         photo = codecs.encode(i.file.read(), 'base64')
         img.append(photo.decode('utf-8'))
-    return render_template('enterclass.html', data=view_class, assign=asst, image=img, subasst=subasst), 200
+    # return render_template('enterclass.html', data=view_class, assign=asst, image=img, subasst=subasst), 200
     # return jsonify(subasst), 200
-    # return redirect('/enter/'+cid)
+    return redirect('/enter/'+cid)
 
 
 @app.route('/assignment/<string:id>', methods=['POST'])

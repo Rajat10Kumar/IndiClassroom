@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card container mt-5">
+    <h4>{{data['cname']}}</h4>
+<div class="row g-3">
+    <h6 class="col-sm">Students : {{data['student']|length}}</h6>
+    <h6 class="col-sm">Teachers : {{data['teacher']|length}}</h6>
+    <button type="button" class="btn btn-primary col-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
+        data-bs-whatever="@mdo">Add Assignment</button>
+</div>
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Assign Assignment to Students</h5>
+                    <button type="button" class="btn-close btn-outline-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form name="assignment" action="{{url_for('assign_assignment',id = data['cid'])}}" method="POST" enctype="multipart/form-data">
+                        <div class="row g-2">
+                            <div class="col-sm">
+                                <label for="recipient-name" class="col-form-label">Title:</label>
+                                <input type="text" class="form-control" id="recipient-name" name="title"  >
+                            </div>
+                            <div class="col-sm">
+                                <label for="due-date" class="col-form-label">Due Date:</label>
+                                <input type="datetime-local" class="mb-3 container btn-outline-warning p-1" name="date" id="due-date"/>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Description:</label>
+                            <textarea class="form-control" id="message-text" name="desc"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">Upload</label>
+                            <input class="form-control" type="file" id="formFile" name="file" autocomplete="off" required>
+                        </div>
+                        <input type="submit" class="btn btn-primary col-12" value="Submit" />
+                    </form>
+                </div>
+                <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+<div  class="card-wrapper">
+    {% if not assign %}
+    <div class="card">
+        <h5 class="center">No Assignment Assigned Yet</h5>     
+    </div> 
+    {% else %}
+    <div class="card">
+        {%for i in range(assign|length)%}
+            <h4>{{assign[i]['title']}}</h4>
+            <h5>{{assign[i]['desc']}}</h5>
+            <img src="data:image/png;base64, {{image[i]}}"/>
+        {%endfor%}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
