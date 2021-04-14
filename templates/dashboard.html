@@ -22,6 +22,7 @@
       <strong>Name:</strong> {{ session['user']['name'] }}<br>
       <strong>Email:</strong> {{ session['user']['email'] }}
     </p>
+    
     <button id="myDIV" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
       Join Classroom
     </button>
@@ -33,7 +34,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form class="row needs-validation" novalidate name="join_class">
+            <form class="row needs-validation" novalidate name="join_class" action="/dashboard/join" method="post">
               <div class="col-lg">
                 <label for="validationCustom01" class="form-label">Enter Classroom Code</label>
                 <input type="text" class="form-control" id="validationCustom01" placeholder="eg. XYZ-ABC" required

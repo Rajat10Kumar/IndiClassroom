@@ -1,33 +1,26 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="card-wrapper">
-    <div class="card">
+	<div class="card">
+		<h1 class="center">Log In</h1>
 
-        <h1 class="center">Log In</h1>
+		<form name="login_form" action="/user/login" method="post">
+			<label for="email">Email</label><i class="fa fa-envelope mx-2" style="font-size: large"></i>
+			<input type="email" name="email" class="field" required />
 
-        <form name="login_form">
-
-            <label for="email">Email</label><i class="fa fa-envelope mx-2" style="font-size:large"></i>
-            <input type="email" name="email" class="field" required>
-
-            <label for="password">Password</label><i class="fa fa-lock mx-2" style="font-size:x-large"></i>
-            <input type="password" name="password" class="field" required>
-            <!-- <div class="center">
+			<label for="password">Password</label><i class="fa fa-lock mx-2" style="font-size: x-large"></i>
+			<input type="password" name="password" class="field" required />
+			<!-- <div class="center">
                 <label for="teacher">Teacher</label>
                 <input type="radio" name="isTeacher" value="teacher" id="teacher">
             </div> -->
-            <p class="error error--hidden"></p>
+			<p class="error error--hidden"></p>
 
-            <input type="submit" value="Log In" class="btn btn-primary">
+			<input type="submit" value="Log In" class="btn btn-primary" />
 
-            <div class="center">
-                <a href="/signupform" class="btn btn-secondary">Sign Up</a>
-            </div>
-
-        </form>
-
-    </div>
-
+			<div class="center">
+				<a href="/signupform" class="btn btn-secondary">Sign Up</a>
+			</div>
+		</form>
+	</div>
 </div>
 {% endblock %}

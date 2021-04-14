@@ -33,7 +33,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form class="row needs-validation" name="make_class">
+            <form class="row needs-validation" name="make_class" action="/classroom/create" method="post">
               <div class="col-lg">
                 <label for="validationCustom01" class="form-label">Enter Classroom Name</label>
                 <input type="text" class="form-control" id="validationCustom01" placeholder="eg. IT-2B" required
@@ -48,6 +48,9 @@
         </div>
       </div>
     </div>
+
+
+
   </div>
     {% if not classroom  %}
     <div class="card">

@@ -2,29 +2,24 @@ import datetime
 import os
 from re import sub
 import uuid
-from gridfs import GridFS
-from bson import encode
-from flask import Flask, render_template, session, redirect, jsonify, request, sessions, make_response
+from flask import Flask, render_template, session, redirect, jsonify, request, sessions, make_response, Response
 from functools import wraps
 from passlib.hash import pbkdf2_sha256
 from werkzeug.utils import get_content_type, secure_filename
 # from flask_mongoengine import MongoEngine
 from user.Schema import db
-# import pymongo
+import pymongo
 import codecs
-import bson
-import base64
-from user.models import Register
-from user.Schema import User, Classroom, Assignment, Submission
+from user.Schema import User, Classroom, Assignment, Submission, Subject, Attendance
 from bson.objectid import ObjectId
+from camera import VideoCamera
+
 app = Flask(__name__)
 app.secret_key = 'test'
-# client = pymongo.MongoClient('localhost',27017)
-# db = client.user_login_system
-UPLOAD_FOLDER = 'D:\VS Code'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 ROOT = os.path.abspath(os.path.dirname(__file__))
 APP_NAME = os.path.basename(ROOT)
+attendance_name = ""
 
 
 def allowed_file(filename):
@@ -38,11 +33,14 @@ app.config['MONGODB_SETTINGS'] = {
 }
 # db = MongoEngine()
 db.init_app(app)
+
+
 # fs = GridFS(db)
 
 
 @app.route('/user/signup', methods=['POST'])
 def RegisterUser():
+    print("here")
     data = request.form
     print(data['isTeacher'])
     # user.save()
@@ -60,8 +58,11 @@ def RegisterUser():
         session['user'] = data
         if data['isTeacher']:
             session['is_admin'] = True
+            return redirect("/classroom/")
         else:
             session['is_admin'] = False
+            return redirect("/dashboard/")
+
         return jsonify(user), 200
     # return jsonify({"error": "Signup Failed"}), 400
 
@@ -72,7 +73,11 @@ def login():
     user = User.objects(email=data['email']).first()
     # print(pbkdf2_sha256.verify(data['password'], user.password), user.name,user.email,user.isTeacher)
     if user and pbkdf2_sha256.verify(data['password'], user.password):
-        return start_session(user)
+        start_session(user)
+    if user.isTeacher:
+        return redirect("/classroom/")
+    else:
+        return redirect("/dashboard")
 
     return jsonify({"error": "Invalid Credentails"}), 401
 
@@ -97,6 +102,7 @@ def is_admin(f):
             return f(*args, **kwargs)
         else:
             return redirect('/')
+
     return wrap
 
 
@@ -107,7 +113,9 @@ def login_required(f):
             return f(*args, **kwargs)
         else:
             return redirect('/')
+
     return wrap
+
 
 # from user import routes #should be here only
 
@@ -177,7 +185,7 @@ def create():
     c = Classroom(cid=uuid.uuid4().hex, cname=data['name'], teacher=t)
     c.save()
     print(data["name"])
-    return jsonify({"msg": "done"}), 200
+    return redirect("/classroom")
 
 
 @app.route('/dashboard/join', methods=['POST'])
@@ -200,18 +208,19 @@ def join():
     if flag == 1:
         a.append(obj)
     foo = Classroom.objects(cid=id).update(student=a)
-    return jsonify({"msg": "done"}), 200
+    return redirect("/dashboard")
 
 
 @app.route('/view/<string:id>', methods=['GET'])
 def view_class(id):
     view_class = Classroom.objects(cid=id).first()
     asst = Assignment.objects(onClass=id)
+    sub = Subject.objects(classroom=id)
     img = []
     for i in asst:
         photo = codecs.encode(i.file.read(), 'base64')
         img.append(photo.decode('utf-8'))
-    return render_template('viewclass.html', data=view_class, assign=asst, image=img), 200
+    return render_template('viewclass.html', data=view_class, assign=asst, image=img, subjects=sub), 200
     # return jsonify(view_class), 200
 
 
@@ -219,12 +228,33 @@ def view_class(id):
 def enter_class(id):
     view_class = Classroom.objects(cid=id).first()
     asst = Assignment.objects(onClass=id)
-    img = []
+    done = []
+    unDone = []
+    missing = []
+    submission = []
+    done_img = []
+    unDone_img = []
+    missing_img = []
     for i in asst:
+        subm = Submission.objects(onAssign=i.cid)
         photo = codecs.encode(i.file.read(), 'base64')
-        img.append(photo.decode('utf-8'))
+        junk = (photo.decode('utf-8'))
+        if subm:
+            done.append(i)
+            done_img.append(junk)
+            for j in subm:
+                photo = codecs.encode(j.file.read(), 'base64')
+                submission.append(photo.decode('utf-8'))
+        elif i.dueDate < datetime.datetime.now():
+            missing_img.append(junk)
+            missing.append(i)
+        else:
+            unDone_img.append(junk)
+            unDone.append(i)
     # print(type(asst[0].id))
-    return render_template('enterclass.html', data=view_class, assign=asst, image=img), 200
+    return render_template('enterclass.html', data=view_class, done=done, unDone=unDone, missing=missing,
+                           submission=submission, done_img=done_img, unDone_img=unDone_img,
+                           missing_img=missing_img), 200
     # return render_template('tabs.html'), 200
     # return jsonify(obj), 200
 
@@ -259,8 +289,6 @@ def submit_assignment(id, cid):
         photo = codecs.encode(i.file.read(), 'base64')
         img.append(photo.decode('utf-8'))
     return render_template('enterclass.html', data=view_class, assign=asst, image=img, subasst=subasst), 200
-    # return jsonify(subasst), 200
-    # return redirect('/enter/'+cid)
 
 
 @app.route('/assignment/<string:id>', methods=['POST'])
@@ -270,35 +298,14 @@ def assign_assignment(id):
     file = request.files['file']
     filename = secure_filename(file.filename)
     print(filename)
-    # assign = Assignment()
-    # # with open(UPLOAD_FOLDER, 'rb') as fd:
-    # # assign.file.put(fd, content_type='image/jpeg')
-    # assign.file.put(os.path.join(ROOT, filename), encoding="utf-8")
-
-    # return jsonify(data)
-
-    # if file and allowed_file(file.filename):
-    #     filename = secure_filename(file.filename)
-    #     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     d = data['date']
     on_class = Classroom.objects(cid=id).first()
-    # # jsonify(on_class)
-    # # print(on_class)
-    # # print(len(date))
-    # # print(float(date))
-    # # print(type(date))
-    # # for i in len(date):
-    # #     print(date[i])
-    # # datetime()
-    year = int(d[0]+d[1]+d[2]+d[3])
+    year = int(d[0] + d[1] + d[2] + d[3])
     month = int(d[6])
-    day = int(d[8]+d[9])
-    hour = int(d[11]+d[12])
-    minute = int(d[14]+d[15])
-    # # assign = Assignment(title=data['title'],desc=data['desc'], dueDate=datetime.strptime(d+":00.Z", "%Y-%m-%dT%H:%M:%S.Z"), onClass=on_class)
+    day = int(d[8] + d[9])
+    hour = int(d[11] + d[12])
+    minute = int(d[14] + d[15])
     assign = Assignment()
-    # assign.filename = filename
-    # assign.dueDate = datetime.strptime(d+":00.Z", "%Y-%m-%dT%H:%M:%S.Z")
     assign.dueDate = datetime.datetime(year=year, month=month,
                                        day=day, hour=hour, minute=minute)
     assign.title = data['title']
@@ -315,8 +322,77 @@ def assign_assignment(id):
         photo = codecs.encode(i.file.read(), 'base64')
         img.append(photo.decode('utf-8'))
     return redirect('/view/' + id)
-    # return jsonify(assign), 200
-    # pass
+
+
+@app.route('/postSubject/<string:id>', methods=['POST'])
+def postSubject(id):
+    data = request.form
+    on_class = Classroom.objects(cid=id).first()
+    name = data["name"]
+    sub = Subject()
+    sub.cid = uuid.uuid4().hex
+    sub.classroom = on_class
+    sub.name = name
+    sub.save()
+    return redirect('/view/' + id)
+
+
+@app.route('/postAttendance/<string:id>', methods=['POST'])
+def postAttendance(id):
+    data = request.form
+    on_class = Classroom.objects(cid=id).first()
+    subj = Subject.objects(cid=data["subject"]).first()
+    att = Attendance()
+    d = data['date']
+    year = int(d[0] + d[1] + d[2] + d[3])
+    month = int(d[6])
+    day = int(d[8] + d[9])
+    hour = int(d[11] + d[12])
+    minute = int(d[14] + d[15])
+    att.dueDate = datetime.datetime(year=year, month=month, day=day, hour=hour, minute=minute)
+    att.cid = uuid.uuid4().hex
+    att.classroom = on_class
+    att.subject = subj
+    att.teacher = User.objects(email=session["user"]['email']).first()
+    att.save()
+    return redirect('/classroom/')
+
+
+@app.route('/attendance')
+def index():
+    return render_template('index.html')
+
+
+@app.route('/markedPerson', methods=["POST"])
+def marked_person():
+    return redirect('/dashboard/')
+
+
+def gen(camera):
+    while True:
+        frame, Names = camera.get_frame()
+        global attendance_name
+        if len(Names) == 20 and len(attendance_name) < 1:
+            Max = 0
+            MaxName = ""
+            for i in Names:
+                Count = 0
+                for j in Names:
+                    if i == j:
+                        Count += 1
+                if Count >= Max:
+                    Max = Count
+                    MaxName = i
+            attendance_name = MaxName
+
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen(VideoCamera()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 if __name__ == "__main__":

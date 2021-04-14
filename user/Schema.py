@@ -5,12 +5,12 @@ from flask_mongoengine import MongoEngine
 import uuid
 import mongoengine
 from mongoengine.fields import BooleanField, DateTimeField, FileField, ReferenceField, StringField
+
 # from mongoengine.fields import ReferenceField
 db = MongoEngine()
 
 
 class User(db.Document):
-
     name = db.StringField(required=True)
     email = db.EmailField(required=True)
     password = db.StringField(required=True)
@@ -43,3 +43,17 @@ class Submission(db.Document):
     subDate = db.DateTimeField(default=datetime.datetime.now())
     file = db.FileField()
     onAssign = db.ReferenceField(Assignment)
+
+
+class Subject(db.Document):
+    cid = db.StringField(primary_key=True)
+    name = db.StringField()
+    classroom = db.ReferenceField(Classroom)
+
+
+class Attendance(db.Document):
+    cid = db.StringField(primary_key=True)
+    classroom = db.ReferenceField(Classroom)
+    dueDate = db.DateTimeField()
+    subject = db.ReferenceField(Subject)
+    teacher = db.ReferenceField(User)
