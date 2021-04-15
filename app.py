@@ -1,6 +1,7 @@
 import datetime
 import os
-from re import sub
+import time
+import threading
 import uuid
 from flask import Flask, render_template, session, redirect, jsonify, request, sessions, make_response, Response
 from functools import wraps
@@ -252,9 +253,25 @@ def enter_class(id):
             unDone_img.append(junk)
             unDone.append(i)
     # print(type(asst[0].id))
+    att = Attendance.objects(classroom=id)
+    ans = []
+    teacher = session['user']
+    invalid = {'_id', 'password'}
+    junk = {x: teacher[x] for x in teacher if x not in invalid}
+    for i in att:
+        obj = {}
+        obj['subject'] = i.subject.name
+        obj['date'] = i.dueDate
+        obj['isMissing'] = junk in i.students_marked
+        obj['link'] = '/attendance/' + i.cid
+        ans.append(obj)
+
+    subm = Subject.objects(classroom=id)
+
+
     return render_template('enterclass.html', data=view_class, done=done, unDone=unDone, missing=missing,
                            submission=submission, done_img=done_img, unDone_img=unDone_img,
-                           missing_img=missing_img), 200
+                           missing_img=missing_img, attendance=ans), 200
     # return render_template('tabs.html'), 200
     # return jsonify(obj), 200
 
@@ -358,14 +375,29 @@ def postAttendance(id):
     return redirect('/classroom/')
 
 
-@app.route('/attendance')
-def index():
-    return render_template('index.html')
+@app.route('/attendance/<string:id>')
+def index(id):
+    return render_template('index.html', id=id)
 
 
-@app.route('/markedPerson', methods=["POST"])
-def marked_person():
-    return redirect('/dashboard/')
+@app.route('/markedPerson/<string:id>', methods=["POST"])
+def marked_person(id):
+    teacher = session['user']
+    invalid = {'_id', 'password'}
+    obj = {x: teacher[x] for x in teacher if x not in invalid}
+    foo = Attendance.objects(cid=id)
+    a = []
+    for i in foo:
+        a = i.students_marked
+
+    flag = 1
+    for i in a:
+        if i == obj:
+            flag = 0
+    if flag == 1:
+        a.append(obj)
+    foo = Attendance.objects(cid=id).update(students_marked=a)
+    return redirect("/dashboard")
 
 
 def gen(camera):

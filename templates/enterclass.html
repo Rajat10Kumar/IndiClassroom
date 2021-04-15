@@ -22,6 +22,9 @@
         <li class="nav-item" role="presentation">
         <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Missing</button>
         </li>
+        <li class="nav-item" role="presentation">
+        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button" role="tab" aria-controls="attendance" aria-selected="false">Attendance</button>
+        </li>
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -101,6 +104,18 @@
                 {% endif %}
             </div>
         </div>
+    <div class="tab-pane fade" id="attendance" role="tabpanel" aria-labelledby="contact-tab">
+        <div class="card-wrapper">
+            {% for i in range(attendance|length) %}
+                <div class="card w-100">
+                    {{ attendance[i].subject }}
+                    {{ attendance[i].date }}
+                    {% if not attendance[i].isMissing %}
+                        <a href="{{ attendance[i].link }}">Mark attendance</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div></div>
     </div>
 </div>
 

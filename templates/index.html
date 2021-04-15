@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <h1 align="center">Sit in a Room with good light</h1>
-    <form action="/markedPerson" method="post">
+    <form action="{{url_for('marked_person',id = id)}}" method="post">
         <input type="submit" value="Go to Classroom" class="btn btn-primary">
     </form>
     <br/>

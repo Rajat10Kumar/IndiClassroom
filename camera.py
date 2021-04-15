@@ -3,6 +3,7 @@ import os
 import glob
 import numpy as np
 import face_recognition
+
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
 ds_factor = 0.6
 
@@ -15,7 +16,7 @@ class VideoCamera(object):
         self.allName = []
         dirname = os.path.dirname(__file__)
         path = os.path.join(dirname, 'known_people/')
-        list_of_files = [f for f in glob.glob(path+'*.jpg')]
+        list_of_files = [f for f in glob.glob(path + '*.jpg')]
         number_files = len(list_of_files)
         names = list_of_files.copy()
         for i in range(number_files):
@@ -39,7 +40,7 @@ class VideoCamera(object):
         face_names = []
         ret, frame = self.video.read()
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-        
+
         rgb_small_frame = small_frame[:, :, ::-1]
 
         if self.process_this_frame and len(self.allName) < 20:
@@ -61,6 +62,11 @@ class VideoCamera(object):
                     name = self.known_face_names[best_match_index]
                 self.allName.append(name.split('/')[-1].split('.')[0])
                 face_names.append(name.split('/')[-1].split('.')[0])
+        if len(self.allName) == 20:
+            face_locations = face_recognition.face_locations(rgb_small_frame)
+            face_encodings = face_recognition.face_encodings(
+                rgb_small_frame, face_locations)
+            face_names.append("attendance marked")
 
         self.process_this_frame = not self.process_this_frame
 
@@ -72,7 +78,7 @@ class VideoCamera(object):
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 
             cv2.rectangle(frame, (left, bottom - 35),
-                        (right, bottom), (0, 0, 255), cv2.FILLED)
+                          (right, bottom), (0, 0, 255), cv2.FILLED)
             font = cv2.FONT_HERSHEY_DUPLEX
             cv2.putText(frame, name, (left + 6, bottom - 6),
                         font, 1.0, (255, 255, 255), 1)

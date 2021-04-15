@@ -57,3 +57,4 @@ class Attendance(db.Document):
     dueDate = db.DateTimeField()
     subject = db.ReferenceField(Subject)
     teacher = db.ReferenceField(User)
+    students_marked = db.ListField(db.DictField(), default=list)
