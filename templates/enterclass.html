@@ -113,10 +113,10 @@
                 <div class="card w-100">
                     {{ attendance[i].subject }}
                     {{ attendance[i].date }}
-                    {% if not attendance[i].isMissing and not attendance[i].isLate %}
+                    {% if not attendance[i].isMissing and not attendance[i].isAbsent %}
                         <a href="{{ attendance[i].link }}">Mark attendance</a>
                     {% endif %}
-                    {% if attendance[i].isLate %}
+                    {% if attendance[i].isAbsent %}
                         <p>Absent</p>
                     {% endif %}
                 </div>

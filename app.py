@@ -212,16 +212,59 @@ def join():
     return redirect("/dashboard")
 
 
+@app.route('/mark_present/<string:id>/<string:aid>', methods=['GET'])
+def mark_present(id, aid):
+    user = User.objects(email=id).first()
+    att = Attendance.objects(cid=aid).first()
+    a = att['students_marked']
+    junk = {}
+    junk['name'] = user['name']
+    junk['email'] = user['email']
+    junk['isTeacher'] = user['isTeacher']
+    a.append(junk)
+    att.update(students_marked=a)
+    return redirect("/attendance_view/"+aid)
+
+
+@app.route('/attendance_view/<string:id>', methods=['GET'])
+def view_attendance(id):
+    att = Attendance.objects(cid=id)
+    # print(att)
+    s1 = []
+    ismarked = []
+    for i in att:
+        # s1 = i.classroom.student
+        s1 = i.classroom.student
+
+    # s1 = att['classroom']['student']
+    s2 = att[0]['students_marked']
+    # for i in s1:
+    #     ismarked.append(i in s2)
+    junk = []
+    for i in s1:
+        obj = {}
+        print(i)
+        obj['name'] = i['name']
+        obj['email'] = i['email']
+        obj['isPresent'] = i in s2
+        junk.append(obj)
+    # print(s1)
+    # print(s2)
+    print(junk)
+    return render_template('attendance.html', junk=junk, aid=id)
+
+
 @app.route('/view/<string:id>', methods=['GET'])
 def view_class(id):
     view_class = Classroom.objects(cid=id).first()
     asst = Assignment.objects(onClass=id)
     sub = Subject.objects(classroom=id)
+    att = Attendance.objects(classroom=id)
     img = []
     for i in asst:
         photo = codecs.encode(i.file.read(), 'base64')
         img.append(photo.decode('utf-8'))
-    return render_template('viewclass.html', data=view_class, assign=asst, image=img, subjects=sub), 200
+    return render_template('viewclass.html', data=view_class, assign=asst, image=img, subjects=sub, att=att), 200
     # return jsonify(view_class), 200
 
 
@@ -268,6 +311,7 @@ def enter_class(id):
             obj["isAbsent"] = True
         else:
             obj["isAbsent"] = False
+
         ans.append(obj)
 
     subm = Subject.objects(classroom=id)
@@ -327,6 +371,11 @@ def studentInfo(id):
         obj['date'] = i.dueDate
         obj['isMissing'] = junk in i.students_marked
         obj['link'] = '/attendance/' + i.cid
+        if i.dueDate < datetime.datetime.now() and junk not in i.students_marked:
+            obj["isAbsent"] = True
+        else:
+            obj["isAbsent"] = False
+
         ans.append(obj)
 
     subm = Subject.objects(classroom=id)
