@@ -264,16 +264,85 @@ def enter_class(id):
         obj['date'] = i.dueDate
         obj['isMissing'] = junk in i.students_marked
         obj['link'] = '/attendance/' + i.cid
+        if i.dueDate < datetime.datetime.now() and junk not in i.students_marked:
+            obj["isAbsent"] = True
+        else:
+            obj["isAbsent"] = False
         ans.append(obj)
 
     subm = Subject.objects(classroom=id)
-
+    marked_percentage = []
+    # print(junk)
+    for i in subm:
+        junk_ = {}
+        junk_["name"] = i.name
+        junk_["total"] = len(Attendance.objects(subject=i.cid))
+        junk_["marked"] = len(Attendance.objects(
+            subject=i.cid, students_marked__contains=junk))
+        marked_percentage.append(junk_)
 
     return render_template('enterclass.html', data=view_class, done=done, unDone=unDone, missing=missing,
                            submission=submission, done_img=done_img, unDone_img=unDone_img,
-                           missing_img=missing_img, attendance=ans), 200
+                           missing_img=missing_img, attendance=ans, marked_percentage=marked_percentage), 200
     # return render_template('tabs.html'), 200
     # return jsonify(obj), 200
+
+
+@app.route('/studentInfo/<string:id>', methods=['GET'])
+def studentInfo(id):
+    view_class = Classroom.objects(cid=id).first()
+    asst = Assignment.objects(onClass=id)
+    done = []
+    unDone = []
+    missing = []
+    submission = []
+    done_img = []
+    unDone_img = []
+    missing_img = []
+    for i in asst:
+        subm = Submission.objects(onAssign=i.cid)
+        photo = codecs.encode(i.file.read(), 'base64')
+        junk = (photo.decode('utf-8'))
+        if subm:
+            done.append(i)
+            done_img.append(junk)
+            for j in subm:
+                photo = codecs.encode(j.file.read(), 'base64')
+                submission.append(photo.decode('utf-8'))
+        elif i.dueDate < datetime.datetime.now():
+            missing_img.append(junk)
+            missing.append(i)
+        else:
+            unDone_img.append(junk)
+            unDone.append(i)
+    # print(type(asst[0].id))
+    att = Attendance.objects(classroom=id)
+    ans = []
+    teacher = session['user']
+    invalid = {'_id', 'password'}
+    junk = {x: teacher[x] for x in teacher if x not in invalid}
+    for i in att:
+        obj = {}
+        obj['subject'] = i.subject.name
+        obj['date'] = i.dueDate
+        obj['isMissing'] = junk in i.students_marked
+        obj['link'] = '/attendance/' + i.cid
+        ans.append(obj)
+
+    subm = Subject.objects(classroom=id)
+    marked_percentage = []
+    # print(junk)
+    for i in subm:
+        junk_ = {}
+        junk_["name"] = i.name
+        junk_["total"] = len(Attendance.objects(subject=i.cid))
+        junk_["marked"] = len(Attendance.objects(
+            subject=i.cid, students_marked__contains=junk))
+        marked_percentage.append(junk_)
+
+    return render_template('studentInfo.html', data=view_class, done=done, unDone=unDone, missing=missing,
+                           submission=submission, done_img=done_img, unDone_img=unDone_img,
+                           missing_img=missing_img, attendance=ans, marked_percentage=marked_percentage), 200
 
 
 @app.route('/submit/<id>/<cid>', methods=['POST'])
@@ -366,7 +435,8 @@ def postAttendance(id):
     day = int(d[8] + d[9])
     hour = int(d[11] + d[12])
     minute = int(d[14] + d[15])
-    att.dueDate = datetime.datetime(year=year, month=month, day=day, hour=hour, minute=minute)
+    att.dueDate = datetime.datetime(
+        year=year, month=month, day=day, hour=hour, minute=minute)
     att.cid = uuid.uuid4().hex
     att.classroom = on_class
     att.subject = subj

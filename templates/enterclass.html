@@ -105,13 +105,19 @@
             </div>
         </div>
     <div class="tab-pane fade" id="attendance" role="tabpanel" aria-labelledby="contact-tab">
+        {% for i in range(marked_percentage|length) %}
+            <p>{{ marked_percentage[i].name }} {{ marked_percentage[i].total }} {{ marked_percentage[i].marked }}</p>
+        {% endfor %}
         <div class="card-wrapper">
             {% for i in range(attendance|length) %}
                 <div class="card w-100">
                     {{ attendance[i].subject }}
                     {{ attendance[i].date }}
-                    {% if not attendance[i].isMissing %}
+                    {% if not attendance[i].isMissing and not attendance[i].isLate %}
                         <a href="{{ attendance[i].link }}">Mark attendance</a>
+                    {% endif %}
+                    {% if attendance[i].isLate %}
+                        <p>Absent</p>
                     {% endif %}
                 </div>
             {% endfor %}
