@@ -1,6 +1,7 @@
-{% extends "base.html" %} {% block content %}
-<div class="card-wrapper">
-	<div class="card">
+{% extends "base.html" %} 
+{% block content %}
+<div class="card-wrapper-item mt-5">
+	<div class="card-item">
 		<h1 class="center">Log In</h1>
 
 		<form name="login_form" action="/user/login" method="post">
@@ -15,10 +16,10 @@
             </div> -->
 			<p class="error error--hidden"></p>
 
-			<input type="submit" value="Log In" class="btn btn-primary" />
+			<input type="submit" value="Log In" class="custom-btn btn-3" />
 
 			<div class="center">
-				<a href="/signupform" class="btn btn-secondary">Sign Up</a>
+				<a href="/signupform" class="custom-btn btn-14 text-decoration-none">Sign Up</a>
 			</div>
 		</form>
 	</div>

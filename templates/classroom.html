@@ -1,32 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card-wrapper">
+<div class="card-wrapper-item">
 
-  <div class="card">
+  <!-- <div class="card">
 
     <h1 class="center">Classroom</h1>
     <p class="center">You are currently logged in.</p>
 
     <div class="center">
-      <a href="/user/logout" class="btn btn-primary">Log Out</a>
+      <a href="/user/logout" class="custom-btn btn-3 text-decoration-none"><span>Log Out</span></a>
     </div>
 
-  </div>
-
-  <div class="card">
-
-    <h2 class="center">Your Info</h2>
-
-    <p>
-      <strong>ID:</strong> {{ session['user']['_id']}}<br>
-      <strong>Name:</strong> {{ session['user']['name'] }}<br>
-      <strong>Email:</strong> {{ session['user']['email'] }}<br>
-    </p>
-    <button id="myDIV" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-      Create Classroom
-    </button>
+  </div> -->
+  <button id="myDIV" type="button" class="mt-5 custom-btn btn-12 w-25" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <span class="w-100">Create Classroom</span><span class="w-100">Create Classroom</span>
+  </button>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Create Classroom</h5>
@@ -36,37 +26,47 @@
             <form class="row needs-validation" name="make_class" action="/classroom/create" method="post">
               <div class="col-lg">
                 <label for="validationCustom01" class="form-label">Enter Classroom Name</label>
-                <input type="text" class="form-control" id="validationCustom01" placeholder="eg. IT-2B" required
+                <input type="text" class="form-control w-75" id="validationCustom01" placeholder="eg. IT-2B" required
                   name="name">
               </div>
-              <input type="submit" value="Create Classroom" class="btn btn-primary">
+              <input type="submit" value="Create Classroom" class="custom-btn btn-3 w-50">
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="custom-btn btn-11" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
-
-
-
-  </div>
-    {% if not classroom  %}
-    <div class="card">
-      <h6 class="center">No Classroom has been Created</h6>
-    </div>
-    {% endif %}
-  {%for i in range(0,Length)%}
-  <div class="card">
-    <div class="d-flex justify-content-evenly align-items-center">
-      <h4>{{classroom[i]["cname"]}}</h4>
-      <h5>Students : {{classroom[i]["student"]|length}}</h5>
-    </div>
-    <div class="center mt-2">
-      <a href="{{url_for('view_class',id = classroom[i]['cid'])}}" class="btn btn-outline-success">View Class</a>
-    </div>
-  </div>
-  {%endfor%}
 </div>
+<div class="card-wrapper-item">
+  
+  {% if not classroom  %}
+  <div class="card-item">
+    <h6 class="center">No Classroom has been Created</h6>
+  </div>
+  {% endif %}
+{%for i in range(0,Length)%}
+<div class="card-wrapper-item">
+  <div class="card p-3" style="width: 25rem;">
+    <h3 class="card-header">{{classroom[i]["cname"]}}</h3>
+    <img src="../static/assets/6663.jpg" class="card-img-top view-img" alt="...">
+    <div class="card-body">
+      <p class="card-text">Students : {{classroom[i]["student"]|length}}</p>
+      <a href="{{url_for('view_class',id = classroom[i]['cid'])}}" class="custom-btn btn-13 text-decoration-none w-100 text-center">View Class</a>
+    </div>
+  </div>
+</div>
+<!-- <div class="card-item">
+  <div class="d-flex justify-content-evenly align-items-center">
+    <h3>{{classroom[i]["cname"]}}</h3>
+    <h6>Students : {{classroom[i]["student"]|length}}</h6>
+  </div>
+  <div class="center mt-2">
+    <a href="{{url_for('view_class',id = classroom[i]['cid'])}}" class="custom-btn btn-13 text-decoration-none">View Class</a>
+  </div>
+</div> -->
+{%endfor%}
+</div>
+
 {% endblock %}

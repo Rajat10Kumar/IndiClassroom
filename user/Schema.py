@@ -17,6 +17,13 @@ class User(db.Document):
     isTeacher = db.BooleanField(default=False)
     classroom_Joined = db.ObjectIdField(default=None)
 
+    def to_json(self):
+        return {
+            "_id": str(self.pk),
+            "name": self.name,
+            "email": self.email
+        }
+
 
 class Classroom(db.Document):
     cid = db.StringField(primary_key=True)

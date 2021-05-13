@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block content %}
+<div class="input-group justify-content-center my-3">
+	<div class="form-outline">
+		<br />
+		<br />
+		<br />
+		<form action="{{url_for('getStudentPost',id = session['class'])}}", method="POST">
+			<input type="text" id="form1" class="form-control" placeholder="Search" name="pat" />
+			<input type="submit" class="btn btn-primary" />
+		</form>
+	</div>
+</div>
+<table class="table table-info table-hover">
+	<thead>
+		<tr>
+			<th scope="col">Name</th>
+			<th scope="col">Email</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for i in range(slist|length) %}
+		<tr class="table-primary">
+			<td>{{slist[i]['name']}}</td>
+			<td>{{slist[i]['email']}}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

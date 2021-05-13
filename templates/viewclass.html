@@ -1,156 +1,153 @@
 {% extends "base.html" %} {% block content %}
-<div class="card container mt-5">
-	<h4>{{data['cname']}}</h4>
-	<div class="row g-3">
-		<h6 class="col-sm">Students : {{data['student']|length}}</h6>
-		<h6 class="col-sm">Teachers : {{data['teacher']|length}}</h6>
-		<button
-			type="button"
-			class="btn btn-primary col-sm"
-			data-bs-toggle="modal"
-			data-bs-target="#exampleModal"
-			data-bs-whatever="@mdo"
-		>
-			Add Assignment
-		</button>
-
-		<button id="myDIV1" type="button" class="btn btn-primary col-sm" data-bs-toggle="modal" data-bs-target="#sub">
-			Create Subject
-		</button>
-		<button id="myDIV1" type="button" class="btn btn-primary col-sm" data-bs-toggle="modal" data-bs-target="#att">
-			Create Attendance
-		</button>
-		<div class="modal fade" id="sub" tabindex="-1" aria-labelledby="sub" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="sub">Create Classroom</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<form
-							class="row needs-validation"
-							name="make_class"
-							action="{{url_for('postSubject',id = data['cid'])}}"
-							method="post"
-						>
-							<div class="col-lg">
-								<label for="validationCustom01" class="form-label">Enter Subject Name</label>
-								<input
-									type="text"
-									class="form-control"
-									id="validationCustom01"
-									placeholder="eg. English"
-									required
-									name="name"
-								/>
-							</div>
-							<input type="submit" value="Create Subject" class="btn btn-primary" />
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="modal fade" id="att" tabindex="-1" aria-labelledby="att" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="att">Create Attendance</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<form
-							class="row needs-validation"
-							name="make_class"
-							action="{{url_for('postAttendance',id = data['cid'])}}"
-							method="post"
-						>
-							<div class="col-sm">
-								<label for="due-date" class="col-form-label">Due Date:</label>
-								<input
-									type="datetime-local"
-									class="mb-3 container btn-outline-warning p-1"
-									name="date"
-									id="due-date"
-								/>
-							</div>
-							<div class="col-sm">
-								<label for="subject" class="col-form-label">Subjects</label>
-								<select class="form-select" aria-label="Default select example" id="subject" name="subject">
-									<option selected>Open this select menu</option>
-									{%for i in range(subjects|length)%}
-									<option value="{{ subjects[i].cid }}">{{ subjects[i].name }}</option>
-									{% endfor %}
-								</select>
-							</div>
-							<input type="submit" value="Create Attendance" class="btn btn-primary" />
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
+<div class="card view">
+	<h2 class="card-header">{{data['cname']}}</h2>
+	<h5 class="card-body p-3">Teachers :</h5>
+	{% for i in range(data['teacher']|length) %}
+	<p class="card-body">{{data['teacher'][i]['name']}}</p>
+	{%endfor%}
+	<div class="card-footer">
+		<!-- <div class="justify-content-center"><a href="{{url_for('student',id = data['cid'])}}"
+				class="custom-btn btn-13 mx-5 w-25 text-decoration-none">View Students</a>
+			
+		</div> -->
+		<div class="d-flex g-3 mt-2">
+			<button
+				type="button"
+				class="custom-btn btn-11 mx-5 w-25"
+				data-bs-toggle="modal"
+				data-bs-target="#exampleModal"
+				data-bs-whatever="@mdo"
+			>
+				Add Assignment
+			</button>
+			<button id="myDIV1" type="button" class="custom-btn btn-12 mx-5 w-25" data-bs-toggle="modal" data-bs-target="#sub">
+				<span class="w-75">Create Subject</span><span class="w-75">Create Subject</span>
+			</button>
+			<button id="myDIV2" type="button" class="custom-btn btn-14 mx-5 w-25" data-bs-toggle="modal" data-bs-target="#att">
+				Create Attendance
+			</button>
 		</div>
 	</div>
-
-	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Assign Assignment to Students</h5>
-					<button
-						type="button"
-						class="btn-close btn-outline-danger"
-						data-bs-dismiss="modal"
-						aria-label="Close"
-					></button>
-				</div>
-				<div class="modal-body">
-					<form
-						name="assignment"
-						action="{{url_for('assign_assignment',id = data['cid'])}}"
-						method="POST"
-						enctype="multipart/form-data"
-					>
-						<div class="row g-2">
-							<div class="col-sm">
-								<label for="recipient-name" class="col-form-label">Title:</label>
-								<input type="text" class="form-control" id="recipient-name" name="title" />
-							</div>
-							<div class="col-sm">
-								<label for="due-date" class="col-form-label">Due Date:</label>
-								<input
-									type="datetime-local"
-									class="mb-3 container btn-outline-warning p-1"
-									name="date"
-									id="due-date"
-								/>
-							</div>
-						</div>
-						<div class="mb-3">
-							<label for="message-text" class="col-form-label">Description:</label>
-							<textarea class="form-control" id="message-text" name="desc"></textarea>
-						</div>
-						<div class="mb-3">
-							<label for="formFile" class="form-label">Upload</label>
-							<input class="form-control" type="file" id="formFile" name="file" autocomplete="off" required />
-						</div>
-						<input type="submit" class="btn btn-primary col-12" value="Submit" />
-					</form>
-				</div>
-				<!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                </div> -->
+</div>
+<div class="modal fade" id="sub" tabindex="-1" aria-labelledby="sub" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Create Classroom</h5>
+				<button type="button" class="btn-close custom-btn btn-11" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form
+					class="row needs-validation"
+					name="make_class"
+					action="{{url_for('postSubject',id = data['cid'])}}"
+					method="post"
+				>
+					<div class="col-lg">
+						<label for="validationCustom01" class="form-label">Enter Subject Name</label>
+						<input
+							type="text"
+							class="form-control"
+							id="validationCustom01"
+							placeholder="eg. English"
+							required
+							name="name"
+						/>
+					</div>
+					<input type="submit" value="Create Subject" class="custom-btn btn-13" />
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="custom-btn btn-11" data-bs-dismiss="modal">Close</button>
 			</div>
 		</div>
 	</div>
 </div>
+<div class="modal fade" id="att" tabindex="-1" aria-labelledby="att" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="att">Create Attendance</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form
+					class="row needs-validation"
+					name="make_class"
+					action="{{url_for('postAttendance',id = data['cid'])}}"
+					method="post"
+				>
+					<div class="col-sm">
+						<label for="due-date" class="col-form-label">Due Date:</label>
+						<input type="datetime-local" class="mb-3 container btn-outline-warning p-1" name="date" id="due-date" />
+					</div>
+					<div class="col-sm">
+						<label for="subject" class="col-form-label">Subjects</label>
+						<select class="form-select" aria-label="Default select example" id="subject" name="subject">
+							<option selected>Open this select menu</option>
+							{%for i in range(subjects|length)%}
+							<option value="{{ subjects[i].cid }}">{{ subjects[i].name }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<input type="submit" value="Create Attendance" class="custom-btn btn-13" />
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="custom-btn btn-11" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Assign Assignment to Students</h5>
+				<button type="button" class="btn-close btn-outline-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form
+					name="assignment"
+					action="{{url_for('assign_assignment',id = data['cid'])}}"
+					method="POST"
+					enctype="multipart/form-data"
+				>
+					<div class="row g-2">
+						<div class="col-sm">
+							<label for="recipient-name" class="col-form-label">Title:</label>
+							<input type="text" class="form-control" id="recipient-name" name="title" />
+						</div>
+						<div class="col-sm">
+							<label for="due-date" class="col-form-label">Due Date:</label>
+							<input
+								type="datetime-local"
+								class="mb-3 container btn-outline-warning p-1"
+								name="date"
+								id="due-date"
+							/>
+						</div>
+					</div>
+					<div class="mb-3">
+						<label for="message-text" class="col-form-label">Description:</label>
+						<textarea class="form-control" id="message-text" name="desc"></textarea>
+					</div>
+					<div class="mb-3">
+						<label for="formFile" class="form-label">Upload</label>
+						<input class="form-control" type="file" id="formFile" name="file" autocomplete="off" required />
+					</div>
+					<input type="submit" class="custom-btn btn-13 col-12" value="Submit" />
+				</form>
+			</div>
+			<!-- <div class="modal-footer">
+                    <button type="button" class="custom-btn btn-11" data-bs-dismiss="modal">Close</button>
+                </div> -->
+		</div>
+	</div>
+</div>
 <div class="container">
-	<ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+	<ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
 		<li class="nav-item" role="presentation">
 			<button
 				class="nav-link active"
@@ -181,41 +178,46 @@
 		</li>
 	</ul>
 	<div class="tab-content" id="myTabContent">
-		<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-			<div class="card-wrapper">
-				{% if not assign %}
-				<div class="card">
-					<h5 class="center">No Assignment Assigned Yet</h5>
-				</div>
-				{% else %}
-				<div class="card">
-					{%for i in range(assign|length)%}
-					<h4>{{assign[i]['title']}}</h4>
-					<h5>{{assign[i]['desc']}}</h5>
-					<img src="data:image/png;base64, {{image[i]}}" />
-					{%endfor%}
-				</div>
-				{% endif %}
+		<div class="tab-pane fade show active col-12 w-100" id="home" role="tabpanel" aria-labelledby="home-tab">
+			{% if not assign %}
+			<div class="card">
+				<h5 class="center">No Assignment Assigned Yet</h5>
 			</div>
-		</div>
-		<div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-			<div class="card-wrapper">
-				{% if not att %}
-				<div class="card">
-					<h5 class="center">No Attendance Assigned Yet</h5>
+			{% else %}
+			<div class="col-12 w-100 row">
+				{%for i in range(assign|length)%}
+				<div class="card-asst col-6">
+					<div class="card_image"><img src="data:image/png;base64, {{image[i]}}" alt="..." /></div>
+					<div class="text-center text-black-50">
+						<h3>{{assign[i]['title']}}</h3>
+					</div>
 				</div>
-				{% else %} {%for i in range(att|length)%}
-				<div class="card">
-					<h4>{{att[i]['cid']}}</h4>
-					<h4>{{att[i]['dueDate']}}</h4>
-					<div class="center mt-2">
-						<a href="{{url_for('view_attendance',id = att[i]['cid'])}}" class="btn btn-outline-primary"
+				{%endfor%}
+			</div>
+			{% endif %}
+		</div>
+		<div class="tab-pane fade show col-12 w-100" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+			{% if not att %}
+			<div class="card">
+				<h5 class="center">No Attendance Assigned Yet</h5>
+			</div>
+			{% else %}
+			<div class="col-12 w-100 row">
+				{%for i in range(att|length)%}
+				<div class="card-att col-6">
+					<div class="text-center text-black-50">
+						<h3>{{att[i]['subject']['name']}}</h3>
+						<a
+							href="{{url_for('view_attendance',id = att[i]['cid'])}}"
+							class="custom-btn btn-16 w-50 text-decoration-none"
 							>Check Attendance</a
 						>
 					</div>
 				</div>
-				{%endfor%} {% endif %}
+
+				{%endfor%}
 			</div>
+			{% endif %}
 		</div>
 	</div>
 </div>

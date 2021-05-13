@@ -14,6 +14,9 @@ import codecs
 from user.Schema import User, Classroom, Assignment, Submission, Subject, Attendance
 from bson.objectid import ObjectId
 from camera import VideoCamera
+from Encoder import Encoder
+from sm import get_Score
+encoder = Encoder()
 
 app = Flask(__name__)
 app.secret_key = 'test'
@@ -194,6 +197,7 @@ def create():
 def join():
     data = request.form
     id = data["code"]
+    id = encoder.base64decode(id)
     # Classroom.obj
     foo = Classroom.objects(cid=id)
     a = []
@@ -256,6 +260,7 @@ def view_attendance(id):
 
 @app.route('/view/<string:id>', methods=['GET'])
 def view_class(id):
+    session['class']=id
     view_class = Classroom.objects(cid=id).first()
     asst = Assignment.objects(onClass=id)
     sub = Subject.objects(classroom=id)
@@ -264,6 +269,7 @@ def view_class(id):
     for i in asst:
         photo = codecs.encode(i.file.read(), 'base64')
         img.append(photo.decode('utf-8'))
+    print(asst.to_json())
     return render_template('viewclass.html', data=view_class, assign=asst, image=img, subjects=sub, att=att), 200
     # return jsonify(view_class), 200
 
@@ -544,6 +550,31 @@ def gen(camera):
 def video_feed():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/getStudent/<string:id>')
+def student(id):
+    ret = []
+    clss = Classroom.objects(cid = id)
+    for i in clss:
+        for j in i.student:
+            uer = User.objects(email = j['email'])
+            for k in uer:
+                ret.append(k.to_json())
+    return render_template("studentList.html", slist = ret)
+
+@app.route('/getStudentPost/<string:id>', methods=["POST"])
+def getStudentPost(id):
+    data = request.form
+    pat = data['pat']
+    ret = []
+    clss = Classroom.objects(cid = id)
+    for i in clss:
+        for j in i.student:
+            uer = User.objects(email = j['email'])
+            for k in uer:
+                ret.append(k.to_json())
+    ret = get_Score(pat, ret)
+    return render_template("studentList.html", slist = ret)
 
 
 if __name__ == "__main__":
