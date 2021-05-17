@@ -1,122 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="/static/css/normalize.css" type="text/css" />
-		<link rel="stylesheet" href="/static/css/styles.css" type="text/css" />
-		<link rel="stylesheet" href="/static/css/main.css" type="text/css" />
-		<link rel="stylesheet" href="/static/css/sidebar.css" type="text/css" />
-		<link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css" rel="stylesheet" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-		<!-- <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" type="text/css" > -->
-		<link
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
-			rel="stylesheet"
-			integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
-			crossorigin="anonymous"
-		/>
-		<title>IndiClassroom</title>
-	</head>
 
-	<body id="body-pd">
-		<header class="header" id="header">
-			<div class="header__toggle">
-				<i class="bx bx-menu" id="header-toggle"></i>
-			</div>
-			<h4 style="color: rgb(1, 182, 253)" id="title"><i class="fa fa-graduation-cap mx-2"></i>IndiClassroom</h4>
-			{% if session['user'] %}
-			<span class="nav__name text-primary"
-				>{{session['user']['name']}} is Logged In<i class="bx bx-user-circle m-4" style="font-size: 1.4rem"></i
-			></span>
-			<a href="/user/logout" class="nav__link_logout text-decoration-none custom-btn p-2">
-				<i class="bx bx-log-out nav__icon"></i>
-				<span class="nav__name">Log Out</span>
-			</a>
-			{% endif %}
-		</header>
-		<div class="l-navbar" id="nav-bar">
-			<nav class="nav nav-junk">
-				<div>
-					<a href="/" class="nav__logo">
-						<i class="bx bxs-graduation nav__logo-icon"></i>
-						<span class="nav__logo-name">IndiClassroom</span>
-					</a>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/css/normalize.css" type="text/css" />
+  <link rel="stylesheet" href="/static/css/styles.css" type="text/css">
+  <link rel="stylesheet" href="/static/css/main.css" type="text/css">
+  <link rel="stylesheet" href="/static/css/sidebar.css" type="text/css">
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" type="text/css" > -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+  <title>IndiClassroom</title>
+</head>
 
-					<div class="nav__list">
-						{%if not session['user'] %}
-						<a href="/loginform" class="nav__link active">
-							<i class="bx bx-log-in nav__icon"></i>
-							<span class="nav__name">Login</span>
-						</a>
-						{% endif %}
-						<a href="/signupform" class="nav__link">
-							<i class="bx bx-user nav__icon"></i>
-							<span class="nav__name">Sign Up</span>
-						</a>
+<body id="body-pd">
+  <header class="header" id="header">
+    <div class="header__toggle">
+      <i class="bx bx-menu" id="header-toggle"></i>
+    </div>
+    <h4 style="color: rgb(1, 182, 253);" id="title"><i class="fa fa-graduation-cap mx-2"></i>IndiClassroom</h4>
+    {% if session['user'] %}
+    <span class="nav__name text-primary">{{session['user']['name']}} is Logged In<i class="bx bx-user-circle m-4"
+        style="font-size: 1.4rem;"></i></span>
+    <a href="/user/logout" class="nav__link_logout text-decoration-none custom-btn p-2">
+      <i class="bx bx-log-out nav__icon"></i>
+      <span class="nav__name">Log Out</span>
+    </a>
+    {% endif %}
 
-						<a href="#" class="nav__link">
-							<i class="bx bx-info-square nav__icon"></i>
-							<span class="nav__name">About</span>
-						</a>
+  </header>
+  <div class="l-navbar" id="nav-bar">
+    <nav class="nav nav-junk">
+      <div>
+        <a href="/" class="nav__logo">
+          <i class="bx bxs-graduation nav__logo-icon"></i>
+          <span class="nav__logo-name">IndiClassroom</span>
+        </a>
 
-						{% if session['is_admin'] %}
-						<a href="/classroom" class="nav__link">
-							<i class="bx bxs-school nav__icon"></i>
-							<span class="nav__name">Classroom</span>
-						</a>
-						<a href="{{url_for('student',id = session['class'])}}" class="nav__link">
-							<i class="bx bx-book-alt nav__icon"></i>
-							<span class="nav__name">Students</span>
-						</a>
-						{% else %}
-						<a href="/dashboard" class="nav__link">
-							<i class="bx bxs-school nav__icon"></i>
-							<span class="nav__name">Dashboard</span>
-						</a>
-						{% endif %}
+        <div class="nav__list">
+          {%if not session['user'] %}
+          <a href="/loginform" class="nav__link activate">
+            <i class="bx bx-log-in nav__icon"></i>
+            <span class="nav__name">Login</span>
+          </a>
+          {% endif %}
+          <a href="/signupform" class="nav__link">
+            <i class="bx bx-user nav__icon"></i>
+            <span class="nav__name">Sign Up</span>
+          </a>
+          <a href="/" class="nav__link">
+            <i class="bx bx-info-square nav__icon"></i>
+            <span class="nav__name">About</span>
+          </a>
+          {% if session['is_admin'] %}
+          <a href="/classroom" class="nav__link">
+            <i class="bx bxs-school nav__icon"></i>
+            <span class="nav__name">Classroom</span>
+          </a>
+          <a href="{{url_for('student',id = session['class'])}}" class="nav__link">
+            <i class="bx bx-book-alt nav__icon"></i>
+            <span class="nav__name">Students</span>
+          </a>
+          {% else %}
+          <a href="/dashboard" class="nav__link">
+            <i class="bx bxs-school nav__icon"></i>
+            <span class="nav__name">Dashboard</span>
+          </a>
+          {% endif %}
+          <a href="/home" class="nav__link">
+            <i class="bx bx-home nav__icon"></i>
+            <span class="nav__name">Home</span>
+          </a>
+        </div>
+      </div>
+      {%if session['user'] %}
+      <a href="/user/logout" class="nav__link">
+        <i class="bx bx-log-out nav__icon"></i>
+        <span class="nav__name">Log Out</span>
+      </a>
+      {% endif %}
+    </nav>
+  </div>
+  {% block content %}
+  {% endblock %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+  <script src="/static/js/jquery.js"></script>
+  <script src="/static/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
+    integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
+    integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
+    crossorigin="anonymous"></script>
+</body>
 
-						<a href="#" class="nav__link">
-							<i class="bx bxs-contact nav__icon"></i>
-							<span class="nav__name">Contact</span>
-						</a>
-					</div>
-				</div>
-				{%if session['user'] %}
-				<a href="/user/logout" class="nav__link">
-					<i class="bx bx-log-out nav__icon"></i>
-					<span class="nav__name">Log Out</span>
-				</a>
-				{% endif %}
-			</nav>
-		</div>
-		<!-- <main class="valign-wrapper">
-    <span class="container grey-text text-lighten-1 ">
-      <p class="flow-text">Welcome to</p>
-      <h1 class="title grey-text text-lighten-3">jason's classroom</h1>
-      <blockquote class="flow-text">A place to study for your High School Equivalency Diploma</blockquote>
-  </span>
-  </main> -->
-
-		{% block content %} {% endblock %}
-
-		<script src="/static/js/jquery.js"></script>
-		<script src="/static/js/main.js"></script>
-		<script
-			src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
-			integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
-			crossorigin="anonymous"
-		></script>
-		<script
-			src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
-			integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG"
-			crossorigin="anonymous"
-		></script>
-		<script
-			src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
-			integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
-			crossorigin="anonymous"
-		></script>
-	</body>
 </html>

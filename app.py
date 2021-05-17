@@ -46,25 +46,32 @@ db.init_app(app)
 def RegisterUser():
     print("here")
     data = request.form
-    print(data['isTeacher'])
     # user.save()
     emailexist = User.objects(email=data['email']).first()
     if data['password'] != data['confirm_password']:
-        return jsonify({"error": "Password didn't match"}), 400
+        return render_template("home.html", error_msg="Password didn't match")
     if emailexist:
-        return jsonify({"error": "Email Exists Already"}), 400
+        return render_template("home.html", error_msg="Email Exists Already")
     else:
-        print(data['isTeacher'])
-        user = User(name=data['name'], email=data['email'],
-                    password=pbkdf2_sha256.encrypt(data['password']), isTeacher=data['isTeacher'])
-        user.save()
-        session['logged_in'] = True
-        session['user'] = data
-        if data['isTeacher']:
-            session['is_admin'] = True
-            return redirect("/classroom/")
-        else:
-            session['is_admin'] = False
+        print(data)
+        try:
+            user = User(name=data['name'], email=data['email'],
+                        password=pbkdf2_sha256.encrypt(data['password']), isTeacher=data['isTeacher'])
+            user.save()
+            session['logged_in'] = True
+            session['user'] = data
+            if data['isTeacher']:
+                session['is_admin'] = True
+                return redirect("/classroom/")
+            else:
+                session['is_admin'] = False
+                return redirect("/dashboard/")
+        except:
+            user = User(name=data['name'], email=data['email'],
+                        password=pbkdf2_sha256.encrypt(data['password']), isTeacher=False)
+            user.save()
+            user = User.objects(email=data['email']).first()
+            start_session(user)
             return redirect("/dashboard/")
 
         return jsonify(user), 200
@@ -78,6 +85,8 @@ def login():
     # print(pbkdf2_sha256.verify(data['password'], user.password), user.name,user.email,user.isTeacher)
     if user and pbkdf2_sha256.verify(data['password'], user.password):
         start_session(user)
+    else:
+        return render_template('login.html', error_msg="Invalid Credentails")
     if user.isTeacher:
         return redirect("/classroom/")
     else:
@@ -132,7 +141,7 @@ def logout():
 
 @app.route('/')
 def home():
-    return render_template('base.html')
+    return render_template('title.html')
 
 
 @app.route('/loginform')
@@ -260,7 +269,8 @@ def view_attendance(id):
 
 @app.route('/view/<string:id>', methods=['GET'])
 def view_class(id):
-    session['class']=id
+    session['class'] = id
+    _id = encoder.base64encode(id)
     view_class = Classroom.objects(cid=id).first()
     asst = Assignment.objects(onClass=id)
     sub = Subject.objects(classroom=id)
@@ -270,7 +280,7 @@ def view_class(id):
         photo = codecs.encode(i.file.read(), 'base64')
         img.append(photo.decode('utf-8'))
     print(asst.to_json())
-    return render_template('viewclass.html', data=view_class, assign=asst, image=img, subjects=sub, att=att), 200
+    return render_template('viewclass.html', data=view_class, assign=asst, image=img, subjects=sub, att=att, _id=_id), 200
     # return jsonify(view_class), 200
 
 
@@ -313,6 +323,7 @@ def enter_class(id):
         obj['date'] = i.dueDate
         obj['isMissing'] = junk in i.students_marked
         obj['link'] = '/attendance/' + i.cid
+        obj['teacher'] = i.teacher.name
         if i.dueDate < datetime.datetime.now() and junk not in i.students_marked:
             obj["isAbsent"] = True
         else:
@@ -429,7 +440,7 @@ def submit_assignment(id, cid):
     for i in asst:
         photo = codecs.encode(i.file.read(), 'base64')
         img.append(photo.decode('utf-8'))
-    return render_template('enterclass.html', data=view_class, assign=asst, image=img, subasst=subasst), 200
+    return redirect("/enter/"+cid)
 
 
 @app.route('/assignment/<string:id>', methods=['POST'])
@@ -551,30 +562,37 @@ def video_feed():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
 @app.route('/getStudent/<string:id>')
 def student(id):
     ret = []
-    clss = Classroom.objects(cid = id)
+    clss = Classroom.objects(cid=id)
     for i in clss:
         for j in i.student:
-            uer = User.objects(email = j['email'])
+            uer = User.objects(email=j['email'])
             for k in uer:
-                ret.append(k.to_json())
-    return render_template("studentList.html", slist = ret)
+                a = k.to_json()
+                a['onClass'] = id
+                print(a)
+                ret.append(a)
+    return render_template("studentList.html", slist=ret)
+
 
 @app.route('/getStudentPost/<string:id>', methods=["POST"])
 def getStudentPost(id):
     data = request.form
     pat = data['pat']
     ret = []
-    clss = Classroom.objects(cid = id)
+    print(pat)
+    clss = Classroom.objects(cid=id)
     for i in clss:
         for j in i.student:
-            uer = User.objects(email = j['email'])
+            uer = User.objects(email=j['email'])
             for k in uer:
                 ret.append(k.to_json())
     ret = get_Score(pat, ret)
-    return render_template("studentList.html", slist = ret)
+    print(ret)
+    return render_template("studentList.html", slist=ret)
 
 
 if __name__ == "__main__":

@@ -47,25 +47,16 @@
   </div>
   {% endif %}
 {%for i in range(0,Length)%}
-<div class="card-wrapper-item">
-  <div class="card p-3" style="width: 25rem;">
-    <h3 class="card-header">{{classroom[i]["cname"]}}</h3>
+  <div class="card-class">
+    <div class="circle">
+        <h2>{{classroom[i]["cname"]}}</h2>
+    </div>
     <img src="../static/assets/6663.jpg" class="card-img-top view-img" alt="...">
-    <div class="card-body">
+    <div class="content">
       <p class="card-text">Students : {{classroom[i]["student"]|length}}</p>
-      <a href="{{url_for('view_class',id = classroom[i]['cid'])}}" class="custom-btn btn-13 text-decoration-none w-100 text-center">View Class</a>
+      <a href="{{url_for('view_class',id = classroom[i]['cid'])}}" class="w-100">View Class</a>
     </div>
   </div>
-</div>
-<!-- <div class="card-item">
-  <div class="d-flex justify-content-evenly align-items-center">
-    <h3>{{classroom[i]["cname"]}}</h3>
-    <h6>Students : {{classroom[i]["student"]|length}}</h6>
-  </div>
-  <div class="center mt-2">
-    <a href="{{url_for('view_class',id = classroom[i]['cid'])}}" class="custom-btn btn-13 text-decoration-none">View Class</a>
-  </div>
-</div> -->
 {%endfor%}
 </div>
 

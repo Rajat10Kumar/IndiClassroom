@@ -1,15 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card-wrapper">
-    <div class="card">
+<br/>
+<br/>
+<div class="card-wrapper-item">
+    <div class="col-12">
         {% for i in range(junk|length)%}
-        <div class="d-flex align-items-center">
-            <li>
-                <span>{{junk[i]['name']}}</span>
+        <div class="list-group">
+            <li class="list-group-item">
+                <div class="col-12">
+                    <i class="bx bx-id-card col-2" style="font-size: 1.4rem;"></i>
+                    <span class="col-2">{{junk[i]['name']}}</span>
+                    <span class="col-8 mx-5">{{junk[i]['email']}}</span>
+                </div>
                 {% if junk[i]['isPresent'] %}
-                <button class="btn mx-5 my-2 btn-outline-primary disabled">Present</button>
+                <button class="btn btn-outline-primary mx-5 my-2 text-decoration-none float-end disabled">Present</button>
                 {% else %}
-                <a href="{{url_for('mark_present',id = junk[i]['email'],aid=aid)}}" class="btn btn-primary mx-5 my-2">Mark Present</a>
+                <a href="{{url_for('mark_present',id = junk[i]['email'],aid=aid)}}" 
+                class="custom-btn btn-12 mx-5 my-2 text-decoration-none float-end">
+                <span>Mark Present</span><span>Mark Present</span>
+                </a>
                 {% endif %}
             </li>
         </div>

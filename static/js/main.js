@@ -27,8 +27,16 @@ const linkColor = document.querySelectorAll(".nav__link");
 
 function colorLink() {
   if (linkColor) {
-    linkColor.forEach((l) => l.classList.remove("active"));
-    this.classList.add("active");
+    linkColor.forEach((l) => l.classList.remove("activate"));
+    this.classList.add("activate");
   }
 }
 linkColor.forEach((l) => l.addEventListener("click", colorLink));
+anime.timeline({ loop: false }).add({
+  targets: ".ml15 .word",
+  scale: [14, 1],
+  opacity: [0, 1],
+  easing: "easeOutCirc",
+  duration: 1000,
+  delay: (el, i) => 800 * i,
+});

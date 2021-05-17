@@ -20,7 +20,11 @@
       <label for="confirm_password">Confirm Password</label><i class="fa fa-lock mx-2" style="font-size:x-large"></i>
       <input type="password" name="confirm_password" class="field" required>
 
-      <p class="error error--hidden"></p>
+      {% if error_msg %}
+			<p class="error">
+					{{error_msg}}
+			</p>
+			{% endif %}
       <div class="center">
         <label for="teacher">Teacher</label>
         <input type="radio" name="isTeacher" value="teacher" id="teacher">

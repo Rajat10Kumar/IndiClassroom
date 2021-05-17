@@ -20,8 +20,9 @@ class User(db.Document):
     def to_json(self):
         return {
             "_id": str(self.pk),
-            "name": self.name,
-            "email": self.email
+            "email": self.email,
+            "isTeacher": self.isTeacher,
+            "name": self.name
         }
 
 

@@ -20,7 +20,7 @@
 	<tbody>
 		{% for i in range(slist|length) %}
 		<tr class="table-primary">
-			<td>{{slist[i]['name']}}</td>
+			<td><a href="{{url_for('studentInfo',id = slist[i]['onClass'])}}">{{slist[i]['name']}}</a></td>
 			<td>{{slist[i]['email']}}</td>
 		</tr>
 		{% endfor %}

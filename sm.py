@@ -37,6 +37,7 @@ def get_Score(pat, obj):
             ans[len(foo)] = []
             ans[len(foo)].append(i)
     ret = []
+    print(ans)
     for i in range(0,Max+1):
         try:
             for j in ans[i]:

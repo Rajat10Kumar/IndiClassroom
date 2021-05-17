@@ -14,7 +14,11 @@
                 <label for="teacher">Teacher</label>
                 <input type="radio" name="isTeacher" value="teacher" id="teacher">
             </div> -->
-			<p class="error error--hidden"></p>
+			{% if error_msg %}
+			<p class="error">
+					{{error_msg}}
+			</p>
+			{% endif %}
 
 			<input type="submit" value="Log In" class="custom-btn btn-3" />
 

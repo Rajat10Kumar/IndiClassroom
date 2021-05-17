@@ -55,26 +55,16 @@
     </div>
     {% endif %}
     {%for i in range(0,Length)%}
-    <!-- <div class="card">
-      <div class="d-flex justify-content-evenly align-items-center">
-        <h4>{{classroom[i]["cname"]}}</h4>
-        <h5>Teachers : {{classroom[i]["teacher"]|length}}</h5>
+    <div class="card-class-2">
+      <div class="semi-circle">
+          <h2>{{classroom[i]["cname"]}}</h2>
       </div>
-      <div class="center mt-2">
-        <a href="{{url_for('enter_class',id = classroom[i]['cid'])}}" class="btn btn-outline-success">Enter Class</a>
-      </div>
-    </div> -->
-    <div class="card-wrapper-item">
-      <div class="card p-3" style="width: 25rem;">
-        <h3 class="card-header">{{classroom[i]["cname"]}}</h3>
-        <img src="../static/assets/3895251.jpg" class="card-img-top view-img" alt="..." style="height: 230px;width: 250px;margin-left: 50px;">
-        <div class="card-body">
-        <h5>Teachers : {{classroom[i]["teacher"]|length}}</h5>
-          <a href="{{url_for('enter_class',id = classroom[i]['cid'])}}" class="custom-btn btn-13 text-decoration-none w-100 text-center">View Class</a>
-        </div>
+      <img src="../static/assets/3895251.jpg" class="img-center" alt="...">
+      <div class="content">
+        <p class="card-text">Teachers : {{classroom[i]["teacher"]|length}}</p>
+        <a href="{{url_for('enter_class',id = classroom[i]['cid'])}}" class="w-100">View Class</a>
       </div>
     </div>
     {%endfor%}
   </div>
-
 {% endblock %}

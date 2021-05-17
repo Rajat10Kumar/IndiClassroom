@@ -1,335 +1,146 @@
-{% extends "base.html" %}
-{% block content %}
-
-    
-
-<div class="card container mt-5">
-    <h4>{{data['cname']}}</h4>
-    <div class="row g-3">
-        <h6 class="col-sm">Students : {{data['student']|length}}</h6>
-        <h6 class="col-sm">Teachers : {{data['teacher']|length}}</h6>
-        <input type="hidden" value="{{data['cid']}}" name="cid" />
-    </div>
+{% extends "base.html" %} {% block content %}
+<div class="card view p-2">
+	<input type="hidden" value="{{data['cid']}}" name="cid" />
+	<h2 class="card-header">{{data['cname']}}<i class="bx bx-book-reader float-end" style="color: deepskyblue"></i></h2>
+	<h6 class="col-sm p-2">Students : {{data['student']|length}}</h6>
+	<h6 class="col-sm p-2">Teachers : {{data['teacher']|length}}</h6>
+	<h6 class="col-sm p-2">Teachers :</h6>
+	{% for i in range(data['teacher']|length) %}
+	<p class="card-body">{{data['teacher'][i]['name']}}</p>
+	{%endfor%}
 </div>
 <div class="container">
-    <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
-        <li class="nav-item btn-success" role="presentation">
-        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Done</button>
-        </li>
-        <li class="nav-item" role="presentation">
-        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">UnDone</button>
-        </li>
-        <li class="nav-item" role="presentation">
-        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Missing</button>
-        </li>
-        <li class="nav-item" role="presentation">
-        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button" role="tab" aria-controls="attendance" aria-selected="false">Attendance</button>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <div class="card-wrapper">
-                {% if not done %}
-                <div class="card">
-                    <h5 class="center">No Assignment Submiited Yet</h5>
-                </div>
-                {% else %}
-                <div class="card w-100">
-                    {% for i in range(done|length) %}
-                        <div class="row g-2">
-                            <h3>{{done[i]['title']}}</h3>
-                        </div>
-                        <img src="data:image/png;base64, {{done_img[i]}}" />
-                        <br/>
-                        <img src="data:image/png;base64, {{submission[i]}}" />
-                    {% endfor %}
-                </div>
-                <br/>
-                {% endif %}
-            </div>
-        </div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-            <div class="card-wrapper">
-                {% if not unDone %}
-                <div class="card">
-                    <h5 class="center">No Assignment Submiited Yet</h5>
-                </div>
-                {% else %}
-                <div class="card w-100">
-                    {% for i in range(unDone|length) %}
-                    <div class="row g-2">
-                        <h3>{{unDone[i]['title']}}</h3>
-                    </div>
-                    <img src="data:image/png;base64, {{unDone_img[i]}}" />
-                    {% endfor %}
-                </div>
-                <br/>
-                {% endif %}
-            </div>
-        </div>
-        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-            <div class="card-wrapper">
-                {% if not missing %}
-                <div class="card">
-                    <h5 class="center">No Assignment Submiited Yet</h5>
-                </div>
-                {% else %}
-                <div class="card w-100">
-                    {% for i in range(missing|length) %}
-                    <div class="row g-2">
-                        <h3>{{missing[i]['title']}}</h3>
-                    </div>
-                    <img src="data:image/png;base64, {{missing_img[i]}}" />
-                    {% endfor %}
-                </div>
-                <br/>
-                {% endif %}{% extends "base.html" %} {% block content %}
-                <div class="card view">
-                    <h2 class="card-header">{{data['cname']}}</h2>
-                    <h5 class="card-body p-3">Teachers :</h5>
-                    {% for i in range(data['teacher']|length) %}
-                    <p class="card-body">{{data['teacher'][i]['name']}}</p>
-                    {%endfor%}
-                    <div class="card-footer">
-                        <!-- <div class="justify-content-center"><a href="{{url_for('student',id = data['cid'])}}"
-                                class="custom-btn btn-13 mx-5 w-25 text-decoration-none">View Students</a>
-                            
-                        </div> -->
-                        <div class="d-flex g-3 mt-2">
-                            <button type="button" class="custom-btn btn-11 mx-5 w-25" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal" data-bs-whatever="@mdo">
-                                Add Assignment
-                            </button>
-                            <button id="myDIV1" type="button" class="custom-btn btn-12 mx-5 w-25"
-                                data-bs-toggle="modal" data-bs-target="#sub">
-                                <span  class="w-75">Create Subject</span><span class="w-75">Create Subject</span>
-                            </button>
-                            <button id="myDIV2" type="button" class="custom-btn btn-14 mx-5 w-25" data-bs-toggle="modal"
-                                data-bs-target="#att">
-                                Create Attendance
-                            </button>
-                        </div>
-                
-                
-                
-                    </div>
-                </div>
-                <div class="modal fade" id="sub" tabindex="-1" aria-labelledby="sub" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-md">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Create Classroom</h5>
-                                <button type="button" class="btn-close custom-btn btn-11" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="row needs-validation" name="make_class"
-                                    action="{{url_for('postSubject',id = data['cid'])}}" method="post">
-                                    <div class="col-lg">
-                                        <label for="validationCustom01" class="form-label">Enter Subject Name</label>
-                                        <input type="text" class="form-control" id="validationCustom01" placeholder="eg. English"
-                                            required name="name" />
-                                    </div>
-                                    <input type="submit" value="Create Subject" class="custom-btn btn-13" />
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="custom-btn btn-11" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="att" tabindex="-1" aria-labelledby="att" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-md">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="att">Create Attendance</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="row needs-validation" name="make_class"
-                                    action="{{url_for('postAttendance',id = data['cid'])}}" method="post">
-                                    <div class="col-sm">
-                                        <label for="due-date" class="col-form-label">Due Date:</label>
-                                        <input type="datetime-local" class="mb-3 container btn-outline-warning p-1" name="date"
-                                            id="due-date" />
-                                    </div>
-                                    <div class="col-sm">
-                                        <label for="subject" class="col-form-label">Subjects</label>
-                                        <select class="form-select" aria-label="Default select example" id="subject" name="subject">
-                                            <option selected>Open this select menu</option>
-                                            {%for i in range(subjects|length)%}
-                                            <option value="{{ subjects[i].cid }}">{{ subjects[i].name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <input type="submit" value="Create Attendance" class="custom-btn btn-13" />
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="custom-btn btn-11" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Assign Assignment to Students</h5>
-                                <button type="button" class="btn-close btn-outline-danger" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form name="assignment" action="{{url_for('assign_assignment',id = data['cid'])}}" method="POST"
-                                    enctype="multipart/form-data">
-                                    <div class="row g-2">
-                                        <div class="col-sm">
-                                            <label for="recipient-name" class="col-form-label">Title:</label>
-                                            <input type="text" class="form-control" id="recipient-name" name="title" />
-                                        </div>
-                                        <div class="col-sm">
-                                            <label for="due-date" class="col-form-label">Due Date:</label>
-                                            <input type="datetime-local" class="mb-3 container btn-outline-warning p-1" name="date"
-                                                id="due-date" />
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="message-text" class="col-form-label">Description:</label>
-                                        <textarea class="form-control" id="message-text" name="desc"></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="formFile" class="form-label">Upload</label>
-                                        <input class="form-control" type="file" id="formFile" name="file" autocomplete="off" required />
-                                    </div>
-                                    <input type="submit" class="custom-btn btn-13 col-12" value="Submit" />
-                                </form>
-                            </div>
-                            <!-- <div class="modal-footer">
-                                    <button type="button" class="custom-btn btn-11" data-bs-dismiss="modal">Close</button>
-                                </div> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="container">
-                    <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
-                                role="tab" aria-controls="home" aria-selected="true">
-                                Assignment
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
-                                role="tab" aria-controls="profile" aria-selected="false">
-                                Attendance
-                            </button>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                            
-                                {% if not assign %}
-                                <div class="card">
-                                    <h5 class="center">No Assignment Assigned Yet</h5>
-                                </div>
-                                {% else %}
-                                {%for i in range(assign|length)%}
-                                <!-- <div class="card my-2">
-                                    <div class="card-header"><h4>{{assign[i]['title']}}</h4></div>
-                                    <img src="data:image/png;base64, {{image[i]}}" class="card-img-top" alt="...">
-                                    <div class="card-footer">	
-                                        <p>{{assign[i]['desc']}}</p>
-                                    </div>
-                                </div> -->
-                                <div class="card-asst">
-                                    <div class="card_image"> <img src="data:image/png;base64, {{image[i]}}" alt="..." /> </div>
-                                    <div class="text-center text-black-50">
-                                      <h3>{{assign[i]['title']}}</h3>
-                                    </div>
-                                  </div>
-                                {%endfor%}
-                                {% endif %}
-                            
-                        </div>
-                        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                            
-                                {% if not att %}
-                                <div class="card">
-                                    <h5 class="center">No Attendance Assigned Yet</h5>
-                                </div>
-                                {% else %} 
-                                {%for i in range(att|length)%}
-                                <!-- <div class="card">
-                                    <h4>{{att[i]['cid']}}</h4>
-                                    <h4 style="color: black;">{{att[i]['dueDate']}}<i class="fa fa-history"></i></h4>
-                                    <div class="center mt-2">
-                                        <a href="{{url_for('view_attendance',id = att[i]['cid'])}}"
-                                            class="btn btn-outline-primary">Check Attendance</a>
-                                    </div>
-                                </div> -->
-                                <div class="card-att">
-                                    <div class="text-center text-black-50">
-                                      <h3>{{assign[i]['title']}}</h3>
-                                      <a href="{{url_for('view_attendance',id = att[i]['cid'])}}"
-                                            class="custom-btn btn-16 w-50 text-decoration-none">Check Attendance</a>
-                                    </div>
-                                    
-                                  </div>
-                                
-                                {%endfor%} 
-                                {% endif %}
-                            
-                        </div>
-                    </div>
-                </div>
-                
-                {% endblock %}
-            </div>
-        </div>
-    <div class="tab-pane fade" id="attendance" role="tabpanel" aria-labelledby="contact-tab">
-        {% for i in range(marked_percentage|length) %}
-            <p>{{ marked_percentage[i].name }} {{ marked_percentage[i].total }} {{ marked_percentage[i].marked }}</p>
-        {% endfor %}
-        <div class="card-wrapper">
-            {% for i in range(attendance|length) %}
-                <div class="card w-100">
-                    {{ attendance[i].subject }}
-                    {{ attendance[i].date }}
-                    {% if attendance[i].isMissing %}
-                        <p>Present</p>
-                    {% endif %}
-                    {% if attendance[i].isAbsent %}
-                        <p>Absent</p>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div></div>
-    </div>
-</div>
+	<ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
+		<li class="nav-item" role="presentation">
+			<button
+				class="nav-link active"
+				id="home-tab"
+				data-bs-toggle="tab"
+				data-bs-target="#home"
+				type="button"
+				role="tab"
+				aria-controls="home"
+				aria-selected="true"
+			>
+				Done
+			</button>
+		</li>
+		<li class="nav-item" role="presentation">
+			<button
+				class="nav-link"
+				id="profile-tab"
+				data-bs-toggle="tab"
+				data-bs-target="#profile"
+				type="button"
+				role="tab"
+				aria-controls="profile"
+				aria-selected="false"
+			>
+			Assigned
+			</button>
+		</li>
+		<li class="nav-item" role="presentation">
+			<button
+				class="nav-link"
+				id="contact-tab"
+				data-bs-toggle="tab"
+				data-bs-target="#contact"
+				type="button"
+				role="tab"
+				aria-controls="contact"
+				aria-selected="false"
+			>
+				Missing
+			</button>
+		</li>
+	</ul>
+	<div class="tab-content" id="myTabContent">
+		<div class="tab-pane fade show active col-12 w-75" id="home" role="tabpanel" aria-labelledby="home-tab">
+			{% if not done %}
+			<div class="card nothing">
+				<h5 class="center">No Assignment Submiited Yet<i class="fa fa-graduation-cap ml-2 fa-2x"></i></h5>
+			</div>
+			<i class="bx bxl-tux"></i>
+			{% else %} {% for i in range(done|length) %}
+			<div class="text-center text-white">
+				<h3 style="font-weight: 600">Subject : {{done[i]['title']}} <i class="bx bx-book-reader"></i></h3>
+			</div>
+			<div class="card-asst d-flex g-2 gap-lg-5 p-2">
+				<div class="card_image">
+					<h4 class="text-white text-center">Question</h4>
+					<img src="data:image/png;base64, {{done_img[i]}}" class="left" title="Question" />
+				</div>
+				<div class="card_image">
+					<h4 class="text-white text-center">Answer</h4>
+					<img src="data:image/png;base64, {{submission[i]}}" class="right" title="Submission" />
+				</div>
+			</div>
+			{% endfor %}
+			<br />
+			{% endif %}
+		</div>
+		<div class="tab-pane fade col-12 w-100" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+			{% if not unDone %}
+			<div class="card nothing">
+				<h5 class="center">No Assignment Remaining<i class="fa fa-graduation-cap ml-2 fa-2x"></i></h5>
+			</div>
+			{% else %}
+			<div class="col-10 w-100 row">
+				{% for i in range(unDone|length) %}
+				<div class="card-asst col-5">
+					<div class="card_image"><img src="data:image/png;base64, {{unDone_img[i]}}" alt="..." /></div>
+					<div class="text-center text-black-50">
+						<h3 style="font-weight: 600">{{unDone[i]['title']}}</h3>
+					</div>
+					<form
+						name="assignment"
+						action="{{url_for('submit_assignment',id=unDone[i]['cid'],cid=data['cid'])}}"
+						method="POST"
+						enctype="multipart/form-data"
+					>
+						<div class="mb-3">
+							<label for="formFile" class="form-label text-light">Upload Assignment</label
+							><i class="bx bx-upload"></i>
+						</div>
+					</form>
+				</div>
+				{% endfor %}
+			</div>
 
-{% endblock %}
-<!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Submit Assignment</h5>
-                <button type="button" class="btn-close btn-outline-danger" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form name="assignment" action="{{url_for('submit_assignment',id=assign[i]['cid'])}}"
-                    method="POST" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <h5>{{assign[i]['cid']}}</h5>
-                        <label for="formFile" class="form-label">Upload Assignment</label>
-                        <input class="form-control" type="file" id="formFile" name="file" autocomplete="off"
-                            required>
-                        <input type="hidden" name="aid" value="{{assign[i]['cid']}}"  />
-                    </div>
-                    <input type="submit" class="btn btn-primary col-12" value="Submit" />
-                </form>
-            </div>
-        </div>
-    </div>
-</div> -->
+			{% endif %}
+		</div>
+		<div class="tab-pane fade col-12 w-100" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+			{% if not missing %}
+			<div class="card nothing">
+				<h5 class="center">No Assignment Missing<i class="fa fa-graduation-cap ml-2 fa-2x"></i></h5>
+			</div>
+			{% else %}
+			<div class="col-10 w-100 row">
+				{% for i in range(missing|length) %}
+				<div class="card-asst col-5">
+					<div class="card_image"><img src="data:image/png;base64, {{missing_img[i]}}" alt="..." /></div>
+					<div class="text-center text-black-50">
+						<h3 style="font-weight: 600">{{missing[i]['title']}}</h3>
+					</div>
+					<form
+						name="assignment"
+						action="{{url_for('submit_assignment',id=missing[i]['cid'],cid=data['cid'])}}"
+						method="POST"
+						enctype="multipart/form-data"
+					>
+						<div class="mb-3">
+							<label for="formFile" class="form-label text-white"
+								>Upload Assignment<i class="bx bx-upload"></i
+							></label>
+						</div>
+					</form>
+				</div>
+				{% endfor %}
+			</div>
+			<br />
+			{% endif %}
+		</div>
+
+	</div>
+	{% endblock %}
+</div>
