@@ -1,14 +1,13 @@
 # Indiclassroom
 #### Indian Education System Oriented Website
-![Restaurant Photo](./static/assets/13113.jpg)
+![Photo](./static/assets/13113.jpg)
 
 ## Table Of Contents
   - [About](#about)
-  - [Installation Prerequisites](#installation-prerequisites)
-  - [How to Run this Website](#how-to-run-this-react-native-app)
+  - [Report](#report)
 
 ## Report
-- [Click Here to View Report](https://drive.google.com/file/d/13SRdbMaXh6tX8riDDDNLbf69H_M76w_V/view?usp=sharing)
+- [Click Here to View Report](https://docs.google.com/document/d/1FMofHCy3zmZOZAafZGWvm-TqdGNoneafIhKYe05Rtvo/edit?usp=sharing)
 
 ## About
 
@@ -28,7 +27,7 @@ The Website has following functionalities :
 
 **Home Page**
 
-<img src="./static/assets/home.jpeg" width="1280">
+<img src="./static/assets/home.jpeg" width="1300">
 
 
 ## Contributors
