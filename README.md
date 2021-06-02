@@ -1,4 +1,4 @@
-# Indiclassroom
+# IndiClassroom
 #### Indian Education System Oriented Website
 ![Photo](./static/assets/13113.jpg)
 
